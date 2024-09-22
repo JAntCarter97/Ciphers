@@ -28,6 +28,8 @@ def pontifexCipherEncrypt(message, keyPhrase):
     #Create default card deck permutation list
     deckOrder = list(cardDict.values())
     print(len(deckOrder))
+    #Empty list for the output line
+    outputLine = []
     #Empty list for the new converted message values
     messageNums = []
     keyPhraseNums = []
@@ -66,95 +68,108 @@ def pontifexCipherEncrypt(message, keyPhrase):
     # the deck order remains unshuffled, if the keyPhrase is not default then we will
     # permutate the deck according to the keyPhrase letter values, which is a way to shuffle the
     # deck by doing a second count cut using the index of values of the keyPhrase characters.
-    
-    #Shift Joker A down 1
-    print(deckOrder)
-    for i in deckOrder:
-        if i == "JOKa":
-            indexNum = deckOrder.index(i)
-            newIndexNum = (indexNum + 1) % 54
-            #List boundary end checks so python lists are removing the right indexes
-            if deckOrder.index(i) != 53:             
-                deckOrder.insert(newIndexNum + 1, i)
-                deckOrder.pop(indexNum)
-            elif deckOrder.index(i) == 53:
-                deckOrder.insert(newIndexNum + 1, i)
-                deckOrder.pop(indexNum + 1)
-            break 
-    print()
-    print(deckOrder)
-    print()
-    
-    #Shift Joker B down 2
-    for i in deckOrder:
-        if i == "JOKb":
-            indexNum = deckOrder.index(i)
-            newIndexNum = (indexNum + 2) % 54
-            #List boundary end checks so python lists are removing the right indexes
-            if deckOrder.index(i) >= 52:
-                deckOrder.insert(newIndexNum + 1, i)
-                deckOrder.pop(indexNum + 1)
-            else:
-                deckOrder.insert(newIndexNum + 1, i)
-                deckOrder.pop(indexNum)
-            break
-    print(deckOrder)
-    print()
-    
-    # Triple Cut: Swap the cards above the top joker and below the bottom joker
-    jokerAindex = 0
-    jokerBindex = 0
-    for i in deckOrder:
-        if i == "JOKa":
-            jokerAindex = deckOrder.index(i)
-    for i in deckOrder:
-        if i == "JOKb":
-            jokerBindex = deckOrder.index(i)
-    if jokerAindex < jokerBindex:
-        deckTop = deckOrder[0:jokerAindex]
-        deckMiddle = deckOrder[jokerAindex : jokerBindex + 1]
-        deckBottom = deckOrder[jokerBindex + 1 : len(deckOrder)]
-        deckOrder = deckBottom + deckMiddle + deckTop
-        print(deckOrder)
-    elif jokerAindex > jokerBindex:
-        deckTop = deckOrder[0:jokerBindex]
-        deckMiddle = deckOrder[jokerBindex : jokerAindex + 1]
-        deckBottom = deckOrder[jokerAindex + 1 : len(deckOrder)]
-        deckOrder = deckBottom + deckMiddle + deckTop
-        print(deckOrder)
-    print()
-    
-    # Count Cut: Count down from the top equal to the cardDict key number of the bottom card,
-    #            then cut the deck at that counted down index while keeping the bottom card 
-    #            at the bottom.
-    cardCount = 0
-    for i in cardValues:
-        if i == deckOrder[53]:
-            cardCount = np.where(cardValues == i)[0][0] + 1
-            break
-        elif i == deckOrder[53] and (i == "JOKa" or i == "JOKb"):
-            cardCount = 53
-            break
-    #Cut the deck by the top card's value while keeping the bottom card at the bottom.
-    topDeckCut = []
-    bottomDeckCut = []
-    bottomCard = deckOrder[53:]
-    
-    topDeckCut = deckOrder[0: cardCount]
-    bottomDeckCut = deckOrder[cardCount : 53]
+    l = 0
+    while l < len(message):
         
-    deckOrder = bottomDeckCut + topDeckCut + bottomCard
-    print(deckOrder) 
-    print()
-    
-    # Output Line: Count down from the top equal to the cardDict key number of the Top card,
-    #              if the card you counted down to is a joker then start the algorithm from
-    #              the beginning, if not a joker then that card's cardDict key number is the
-    #              output. 
-    
+        #Shift Joker A down 1
+        print(deckOrder)
+        for i in deckOrder:
+            if i == "JOKa":
+                indexNum = deckOrder.index(i)
+                newIndexNum = (indexNum + 1) % 54
+                #List boundary end checks so python lists are removing the right indexes
+                if deckOrder.index(i) != 53:             
+                    deckOrder.insert(newIndexNum + 1, i)
+                    deckOrder.pop(indexNum)
+                elif deckOrder.index(i) == 53:
+                    deckOrder.insert(newIndexNum + 1, i)
+                    deckOrder.pop(indexNum + 1)
+                break 
+        print()
+        print(deckOrder)
+        print()
+
+        #Shift Joker B down 2
+        for i in deckOrder:
+            if i == "JOKb":
+                indexNum = deckOrder.index(i)
+                newIndexNum = (indexNum + 2) % 54
+                #List boundary end checks so python lists are removing the right indexes
+                if deckOrder.index(i) >= 52:
+                    deckOrder.insert(newIndexNum + 1, i)
+                    deckOrder.pop(indexNum + 1)
+                else:
+                    deckOrder.insert(newIndexNum + 1, i)
+                    deckOrder.pop(indexNum)
+                break
+        print(deckOrder)
+        print()
+
+        # Triple Cut: Swap the cards above the top joker and below the bottom joker
+        jokerAindex = 0
+        jokerBindex = 0
+        for i in deckOrder:
+            if i == "JOKa":
+                jokerAindex = deckOrder.index(i)
+        for i in deckOrder:
+            if i == "JOKb":
+                jokerBindex = deckOrder.index(i)
+        if jokerAindex < jokerBindex:
+            deckTop = deckOrder[0:jokerAindex]
+            deckMiddle = deckOrder[jokerAindex : jokerBindex + 1]
+            deckBottom = deckOrder[jokerBindex + 1 : len(deckOrder)]
+            deckOrder = deckBottom + deckMiddle + deckTop
+            print(deckOrder)
+        elif jokerAindex > jokerBindex:
+            deckTop = deckOrder[0:jokerBindex]
+            deckMiddle = deckOrder[jokerBindex : jokerAindex + 1]
+            deckBottom = deckOrder[jokerAindex + 1 : len(deckOrder)]
+            deckOrder = deckBottom + deckMiddle + deckTop
+            print(deckOrder)
+        print()
+
+        # Count Cut: Count down from the top equal to the cardDict key number of the bottom card,
+        #            then cut the deck at that counted down index while keeping the bottom card 
+        #            at the bottom.
+        cardCount = 0
+        for i in cardValues:
+            if i == deckOrder[53]:
+                cardCount = np.where(cardValues == i)[0][0] + 1
+                break
+            elif i == deckOrder[53] and (i == "JOKa" or i == "JOKb"):
+                cardCount = 53
+                break
+        #Cut the deck by the top card's value while keeping the bottom card at the bottom.
+        topDeckCut = []
+        bottomDeckCut = []
+        bottomCard = deckOrder[53:]
+
+        topDeckCut = deckOrder[0: cardCount]
+        bottomDeckCut = deckOrder[cardCount : 53]
+
+        deckOrder = bottomDeckCut + topDeckCut + bottomCard
+        print(deckOrder) 
+        print()
+
+        # Output Line: Count down from the top equal to the cardDict key number of the Top card,
+        #              if the card you counted down to is a joker then start the algorithm from
+        #              the beginning, if not a joker then that card's cardDict key number is the
+        #              output. 
+        cardCount = 0 
+        for i in cardValues:
+            if i == deckOrder[0] and (i != "JOKa" and i != "JOKb"):
+                cardCount = np.where(cardValues == i)[0][0] + 1
+                break
+            elif i == deckOrder[0] and (i == "JOKa" or i == "JOKb"):
+                cardCount = np.where(cardValues == i)[0][0] 
+        if deckOrder[cardCount] == "JOKa" or deckOrder[cardCount] == "JOKb":
+            continue
+        outputLine.append(deckOrder[cardCount])
+        l += 1
+    print(outputLine)
     
     #Encryption:
-    # Add message text num values to output text num values (modulo 26).
+    # Add message text num values to outputLine num values (modulo 26).
     # This is now the Cipher texts num values.
     # Convert cipher text num values to letters. This is the Encrypted Cipher Text.
     
