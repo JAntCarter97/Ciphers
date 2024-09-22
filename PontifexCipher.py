@@ -17,6 +17,11 @@ cardDict = {1: "Ac", 2: "2c", 3: "3c", 4: "4c", 5: "5c", 6: "6c", 7: "7c", 8: "8
 
 cardKeys = np.array(list(cardDict.keys()))
 cardValues = np.array(list(cardDict.values()))
+     
+#Custom Modulo funtion
+def custom_modulo(n, mod):
+    result = n % mod
+    return result if result != 0 else mod
                 
 #PONTIFEX Method
 def pontifexCipherEncrypt(message, keyPhrase):
@@ -27,7 +32,7 @@ def pontifexCipherEncrypt(message, keyPhrase):
     keyPhrase = keyPhrase.upper()
     #Create default card deck permutation list
     deckOrder = list(cardDict.values())
-    print(len(deckOrder))
+    #print(len(deckOrder))
     #Empty list for the output line
     outputLine = []
     #Empty list for the new converted message values
@@ -38,18 +43,13 @@ def pontifexCipherEncrypt(message, keyPhrase):
         for k in textValues:
             if i == k:
                 messageNums.append(np.where(textValues == k)[0][0]+1)
-    print(messageNums)
+    #print(messageNums)
     #Convert keyPhrase to text number values
     for i in keyPhrase:
         for k in textValues:
             if i == k:
                 keyPhraseNums.append(np.where(textValues == k)[0][0]+1)
-    print(keyPhraseNums)
-    print()
-    #TO DO: Use pontifext to shuffle deck using the keyPhraseNums values.
-    #       Use pontifex to get an output line of numbers.
-    #       Add messageNums to output line of numbers modulo 26 to cipherTextNums.
-    #       Convert cipherTextNums to text.
+    #print(keyPhraseNums)
     
     #ALgorithm:
     # Shift Joker A down 1 card. Bottom card position serves as the top card position (cyclic). 
@@ -68,11 +68,13 @@ def pontifexCipherEncrypt(message, keyPhrase):
     # the deck order remains unshuffled, if the keyPhrase is not default then we will
     # permutate the deck according to the keyPhrase letter values, which is a way to shuffle the
     # deck by doing a second count cut using the index of values of the keyPhrase characters.
+    print(deckOrder)
+    print()
     l = 0
     while l < len(message):
         
         #Shift Joker A down 1
-        print(deckOrder)
+        print("Shifting Joker A down 1")
         for i in deckOrder:
             if i == "JOKa":
                 indexNum = deckOrder.index(i)
@@ -90,6 +92,7 @@ def pontifexCipherEncrypt(message, keyPhrase):
         print()
 
         #Shift Joker B down 2
+        print("Shifting Joker B down 2")
         for i in deckOrder:
             if i == "JOKb":
                 indexNum = deckOrder.index(i)
@@ -106,6 +109,7 @@ def pontifexCipherEncrypt(message, keyPhrase):
         print()
 
         # Triple Cut: Swap the cards above the top joker and below the bottom joker
+        print("Performing a Triple Cut")
         jokerAindex = 0
         jokerBindex = 0
         for i in deckOrder:
@@ -131,6 +135,7 @@ def pontifexCipherEncrypt(message, keyPhrase):
         # Count Cut: Count down from the top equal to the cardDict key number of the bottom card,
         #            then cut the deck at that counted down index while keeping the bottom card 
         #            at the bottom.
+        print("Perforing a Count Cut")
         cardCount = 0
         for i in cardValues:
             if i == deckOrder[53]:
@@ -166,12 +171,51 @@ def pontifexCipherEncrypt(message, keyPhrase):
             continue
         outputLine.append(deckOrder[cardCount])
         l += 1
-    print(outputLine)
+    #print("Output line", outputLine)
     
     #Encryption:
     # Add message text num values to outputLine num values (modulo 26).
     # This is now the Cipher texts num values.
     # Convert cipher text num values to letters. This is the Encrypted Cipher Text.
+    
+    #Convert outputLine to text values and add them to messageNums modulo 26
+    outputLineNums = []
+    for i in outputLine:
+        for k in cardValues:
+            if i == k:
+                outputLineNums.append(np.where(cardValues == k)[0][0] + 1)
+    #print("MessageNums   ", messageNums)
+    #print("OutputLineNums", outputLineNums)
+    
+    #Add messageNums to outputLineNums modulo 26 keeping 26 if 26/26 rather than 0
+    cipherTextNums = []
+    l = 0     
+    while l < len(messageNums) and l < len(outputLineNums):
+        addedValue = (messageNums[l] + outputLineNums[l])
+        addedValue = custom_modulo(addedValue, 26)
+        cipherTextNums.append(addedValue)
+        l += 1
+    
+    #print("cipherTextNums", cipherTextNums)    
+    
+    cipherText = []
+    #Convert cipherTextNums to cipherText
+    for i in cipherTextNums:
+        for k in textValues:
+            if i == np.where(textValues == k)[0][0]:
+                cipherText.append(textValues[np.where(textValues == k)[0][0] - 1])
+    #print("cipherText", cipherText)
+
+    #Format the Cipher text to be separated by a space for every 5 characters of text.
+    l = 0
+    cipherTextEncrypted = ""
+    cipherTextFormatted = ""
+    while l < len(cipherText):
+        cipherTextEncrypted += "".join(cipherText[l])
+        l += 1      
+    cipherTextFormatted = ' '.join(cipherTextEncrypted[i:i+5] for i in range(0, len(cipherTextEncrypted), 5))
+        
+    print("Encrypted and Formatted Cipher Text", cipherTextFormatted)
     
     #Decryption
     # Subtract cipher text num values from output text num values (modulo 26).
