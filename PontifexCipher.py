@@ -24,7 +24,7 @@ def custom_modulo(n, mod):
     return result if result != 0 else mod
                 
 #PONTIFEX Method
-def pontifexCipherEncrypt(message, keyPhrase):
+def pontifexCipher(message, keyPhrase, isEncryptMode):
     #Remove all whitespace and capitalize all characters
     message = message.replace(" ", "")
     message = message.upper()
@@ -87,7 +87,7 @@ def pontifexCipherEncrypt(message, keyPhrase):
                     deckOrder.insert(newIndexNum + 1, i)
                     deckOrder.pop(indexNum + 1)
                 break 
-        print()
+            
         print(deckOrder)
         print()
 
@@ -173,59 +173,107 @@ def pontifexCipherEncrypt(message, keyPhrase):
         l += 1
     #print("Output line", outputLine)
     
+    ###############################################################################################
     #Encryption:
+    # If the isEncryptMode parameter is set to True then we run this:
+    
     # Add message text num values to outputLine num values (modulo 26).
     # This is now the Cipher texts num values.
     # Convert cipher text num values to letters. This is the Encrypted Cipher Text.
-    
-    #Convert outputLine to text values and add them to messageNums modulo 26
-    outputLineNums = []
-    for i in outputLine:
-        for k in cardValues:
-            if i == k:
-                outputLineNums.append(np.where(cardValues == k)[0][0] + 1)
-    #print("MessageNums   ", messageNums)
-    #print("OutputLineNums", outputLineNums)
-    
-    #Add messageNums to outputLineNums modulo 26 keeping 26 if 26/26 rather than 0
-    cipherTextNums = []
-    l = 0     
-    while l < len(messageNums) and l < len(outputLineNums):
-        addedValue = (messageNums[l] + outputLineNums[l])
-        addedValue = custom_modulo(addedValue, 26)
-        cipherTextNums.append(addedValue)
-        l += 1
-    
-    #print("cipherTextNums", cipherTextNums)    
-    
-    cipherText = []
-    #Convert cipherTextNums to cipherText
-    for i in cipherTextNums:
-        for k in textValues:
-            if i == np.where(textValues == k)[0][0]:
-                cipherText.append(textValues[np.where(textValues == k)[0][0] - 1])
-    #print("cipherText", cipherText)
+    if isEncryptMode == True:
+        print("Encrypt Mode")
+        #Convert outputLine to text values and add them to messageNums modulo 26
+        outputLineNums = []
+        for i in outputLine:
+            for k in cardValues:
+                if i == k:
+                    outputLineNums.append(np.where(cardValues == k)[0][0] + 1)
+        #print("MessageNums   ", messageNums)
+        #print("OutputLineNums", outputLineNums)
 
-    #Format the Cipher text to be separated by a space for every 5 characters of text.
-    l = 0
-    cipherTextEncrypted = ""
-    cipherTextFormatted = ""
-    while l < len(cipherText):
-        cipherTextEncrypted += "".join(cipherText[l])
-        l += 1      
-    cipherTextFormatted = ' '.join(cipherTextEncrypted[i:i+5] for i in range(0, len(cipherTextEncrypted), 5))
-        
-    print("Encrypted and Formatted Cipher Text", cipherTextFormatted)
+        #Add messageNums to outputLineNums modulo 26 keeping 26 if 26/26 rather than 0
+        cipherTextNums = []
+        l = 0     
+        while l < len(messageNums) and l < len(outputLineNums):
+            addedValue = (messageNums[l] + outputLineNums[l])
+            addedValue = custom_modulo(addedValue, 26)
+            cipherTextNums.append(addedValue)
+            l += 1
+
+        #print("cipherTextNums", cipherTextNums)    
+
+        cipherText = []
+        #Convert cipherTextNums to cipherText
+        for i in cipherTextNums:
+            for k in textValues:
+                if i == np.where(textValues == k)[0][0]:
+                    cipherText.append(textValues[np.where(textValues == k)[0][0] - 1])
+        #print("cipherText", cipherText)
+
+        #Format the Cipher text to be separated by a space for every 5 characters of text.
+        l = 0
+        cipherTextEncrypted = ""
+        cipherTextFormatted = ""
+        while l < len(cipherText):
+            cipherTextEncrypted += "".join(cipherText[l])
+            l += 1      
+        cipherTextFormatted = ' '.join(cipherTextEncrypted[i:i+5] for i in range(0, len(cipherTextEncrypted), 5))
+
+        print("Encrypted and Formatted Cipher Text", cipherTextFormatted)
     
     #Decryption
+    # If the isEncryptMode parameter is set to decrypt then we run this:
     # Subtract cipher text num values from output text num values (modulo 26).
     # This is now the message text's num values.
     # Convert message text num values to letters. This is the Decrypted Message Text.
-    
+    elif isEncryptMode == False:
+        print("Decrypt Mode")
+        outputLineNums = []
+        for i in outputLine:
+            for k in cardValues:
+                if i == k:
+                    outputLineNums.append(np.where(cardValues == k)[0][0] + 1)
+                    
+        #Subtract messageNums from outputLineNums modulo 26 keeping 26 if 26/26 rather than 0
+        cipherTextNums = []
+        l = 0     
+        while l < len(messageNums) and l < len(outputLineNums):
+            subtractedValue = (messageNums[l] - outputLineNums[l])
+            subtractedValue = custom_modulo(subtractedValue, 26)
+            cipherTextNums.append(subtractedValue)
+            l += 1
+            
+        cipherText = []
+        #Convert cipherTextNums to cipherText
+        for i in cipherTextNums:
+            for k in textValues:
+                if i == np.where(textValues == k)[0][0]:
+                    cipherText.append(textValues[np.where(textValues == k)[0][0] - 1])
+                    
+        #Format the Cipher text to be separated by a space for every 5 characters of text.
+        l = 0
+        cipherTextDecrypted = ""
+        cipherTextFormatted = ""
+        while l < len(cipherText):
+            cipherTextDecrypted += "".join(cipherText[l])
+            l += 1      
+        cipherTextFormatted = ' '.join(cipherTextDecrypted[i:i+5] for i in range(0, len(cipherTextDecrypted), 5))
+
+        print("Decrypted and Formatted Cipher Text", cipherTextFormatted)
+
+
+#Test Function Calls
 
 #print(textValues)
 #print(cardValues)
-pontifexCipherEncrypt("DONOT USEPC", "Y")
+'''
+These Function calls demonstrate the encryption and decryption modes of the Pontifex Cipher.
+The first call is in encrypt mode which encrypts the cipher text "DONOT USEPC" to "HLXMB TKSTJ".
+The second call is in decrypt mode which decypts the cipher text "HLXMB TKSTJ" to "DONOT USEPC".
+'''
+#pontifexCipher("DONOT USEPC", "Y", True)
+pontifexCipher("HLXMB TKSTJ", "Y", False)
+
 
         
         
