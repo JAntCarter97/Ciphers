@@ -1,5 +1,6 @@
 #Transposition Cipher
-import math
+#TO DO  Add file system that automates all file format naming 
+import math, time, os, sys
 
 def transpositionEncrypt(message, key):
     #Check if any transposing occurs
@@ -49,9 +50,76 @@ def transpositionDecrypt(cipherMessage, key):
         #Returning the complete list of chars joined together resulting in our decrypted message.
         return ''.join(decryptedText)
 
-#Example function calls
+def main():
+    print("Enter .txt file name for encryption/decryption:")
+    inputFileName = input("> ")
+    fileNameWithExtension = inputFileName + ".txt"
+    print("Enter public key number:")
+    myKey = int(input("> " ))
+    
+    
+    #Modes: 'encrypt', 'decrypt'
+    print("(E)ncrypt Mode, (D)ecrypt Mode")
+    modeKey = input("> ")
+    mode = "Default"
+    while not (modeKey.lower() == "e" or modeKey.lower() == "d"):
+        print("Incorrect Entry:\n(E)ncrypt Mode, (D)ecrypt Mode")
+        modeKey = input("> ")
+    
+    if modeKey.lower() == "e":
+        mode = "Encrypt"
+         #Will overwrite original files
+        outputFileName = "%s.Encrypted.txt" % (inputFileName)
+    elif modeKey.lower() == "d":
+        mode = "Decrypt"
+        outputFileName = "%s.Decrypted.txt" % (inputFileName)
+    
+    #Check if the input file name exists, or exit program
+    if not os.path.exists(fileNameWithExtension):
+        print('The file %s does not exist. Quitting . . .' % (fileNameWithExtension))
+        sys.exit()
+        
+    #Give user option to exist program if the output file name already exists to avoid overwriting
+    if os.path.exists(outputFileName):
+        print("This will overwrite the file %s. (C)ontinue or (Q)uit?" % (outputFileName))
+        response = input("> ")
+        while not (response.lower().startswith("c") or response.lower().startswith("q")):
+            print("Incorrect entry.\nThis will overwrite the file %s. (C)ontinue or (Q)uit?")
+            if response.lower().startswith("c") or response.lower().startswith("q"):
+                break
+        if response.lower().startswith("q"):
+            sys.exit()
+        if response.lower().startswith("c"):
+            print("Importing file's contents for encryption. . .")
+            
+    #Read in message from input file
+    fileObj = open(fileNameWithExtension)
+    rawFileContent = fileObj.read()
+    fileObj.close()
+    
+    print("File content imported.")
+    
+    print("%sing" % (mode.title()))
+    
+    #Start encryption/decryptiion timer
+    startTime = time.time()
+    
+    if mode == "Encrypt":
+        translated = transpositionEncrypt(rawFileContent, myKey)
+    elif mode == "Decrypt":
+        translated = transpositionDecrypt(rawFileContent, myKey)
+    
+    #End encryption/decryption timer
+    totalTime = round(time.time() - startTime, 2)
+    print("%sion time: %s seconds" % (mode.title(), totalTime)) 
+    
+    #Write translated content to an output file
+    outputFileObj = open(outputFileName, "w")
+    outputFileObj.write(translated)
+    outputFileObj.close()
+    
+    print("Done %sing %s (%s characters)." % (mode, fileNameWithExtension, len(rawFileContent)))
 
-#encryptedMessage = transpositionEncrypt("Do not use pc", 8)
-#print(encryptedMessage)
-#decryptedMessage = transpositionDecrypt(encryptedMessage, 8)
-#print(decryptedMessage)
+# Call the main function if the program is run instead of imported as a module
+if __name__ == '__main__':
+    main()
