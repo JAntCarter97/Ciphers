@@ -271,7 +271,7 @@ These Function calls demonstrate the encryption and decryption modes of the Pont
 The first call is in encrypt mode which encrypts the cipher text "DONOT USEPC" to "HLXMB TKSTJ".
 The second call is in decrypt mode which decypts the cipher text "HLXMB TKSTJ" to "DONOT USEPC".
 '''
-#pontifexCipher("DONOT USEPC", "Y", True)
+pontifexCipher("DONOT USEPC", "Y", True)
 pontifexCipher("HLXMB TKSTJ", "Y", False)
 
 
