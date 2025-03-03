@@ -1,32 +1,5 @@
 #Pontifex Cipher A.K.A Solitare 
 
-#TO-DO: Return error from Output Line in main permutation algorithm:
-#Sampled ERROR runs (No Initial Key phrase):
-# HELLO THISI SJOHN NYCAR TER
-#LBVJW SWWPM WHPDI TUYBT DO
-#
-#AAAAA
-#EXKYI
-#
-#AAAAA A
-#EXKYI
-#
-#AAAAA AA 
-#EXKYI S 
-#
-#ZZZZZ
-#DWJXH -> Returns Nothing on Decrypt
-#
-#z
-#D -> Returns Nothing on Decrypt
-# 
-#y
-#C -> Correct decryption -> Y
-#
-#aza
-#EWK
-#AA
-
 import numpy as np 
 
 textDict = {1: "A", 2: "B", 3: "C", 4: "D", 5: "E", 6: "F", 7: "G", 8: "H", 9: "I", 10: "J", 11: "K",
@@ -118,6 +91,7 @@ def pontifexCipher(message, isEncryptMode, deckOrderArg = list(cardDict.values()
                     deckOrder.insert(newIndexNum + 1, i)
                     deckOrder.pop(indexNum)
                 break
+        
         print(deckOrder)
         print()
 
@@ -166,6 +140,7 @@ def pontifexCipher(message, isEncryptMode, deckOrderArg = list(cardDict.values()
         bottomDeckCut = deckOrder[cardCount : 53]
 
         deckOrder = bottomDeckCut + topDeckCut + bottomCard
+        
         print(deckOrder) 
         print()
 
@@ -184,7 +159,11 @@ def pontifexCipher(message, isEncryptMode, deckOrderArg = list(cardDict.values()
             continue
         outputLine.append(deckOrder[cardCount])
         l += 1
-    
+
+        print("Outputline")
+        print(outputLine)
+        print()
+        
     ###############################################################################################
     #Encryption:
     # If the isEncryptMode parameter is set to True then we run this:
@@ -218,8 +197,8 @@ def pontifexCipher(message, isEncryptMode, deckOrderArg = list(cardDict.values()
         #Convert cipherTextNums to cipherText
         for i in cipherTextNums:
             for k in textValues:
-                if i == np.where(textValues == k)[0][0]:
-                    cipherText.append(textValues[np.where(textValues == k)[0][0] - 1])
+                if i == (np.where(textValues == k)[0][0] + 1):
+                    cipherText.append(textValues[np.where(textValues == k)[0][0]])
         #print("cipherText", cipherText)
 
         #Format the Cipher text to be separated by a space for every 5 characters of text.
@@ -259,8 +238,8 @@ def pontifexCipher(message, isEncryptMode, deckOrderArg = list(cardDict.values()
         #Convert cipherTextNums to cipherText
         for i in cipherTextNums:
             for k in textValues:
-                if i == np.where(textValues == k)[0][0]:
-                    cipherText.append(textValues[np.where(textValues == k)[0][0] - 1])
+                if i == (np.where(textValues == k)[0][0] + 1):
+                    cipherText.append(textValues[np.where(textValues == k)[0][0]])
                     
         #Format the Cipher text to be separated by a space for every 5 characters of text.
         l = 0
