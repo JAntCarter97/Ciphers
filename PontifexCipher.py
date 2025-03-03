@@ -23,6 +23,9 @@
 #y
 #C -> Correct decryption -> Y
 #
+#aza
+#EWK
+#AA
 
 import numpy as np 
 
