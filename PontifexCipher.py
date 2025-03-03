@@ -1,4 +1,29 @@
 #Pontifex Cipher A.K.A Solitare 
+
+#TO-DO: Return error from Output Line in main permutation algorithm:
+#Sampled ERROR runs (No Initial Key phrase):
+# HELLO THISI SJOHN NYCAR TER
+#LBVJW SWWPM WHPDI TUYBT DO
+#
+#AAAAA
+#EXKYI
+#
+#AAAAA A
+#EXKYI
+#
+#AAAAA AA 
+#EXKYI S 
+#
+#ZZZZZ
+#DWJXH -> Returns Nothing on Decrypt
+#
+#z
+#D -> Returns Nothing on Decrypt
+# 
+#y
+#C -> Correct decryption -> Y
+#
+
 import numpy as np 
 
 textDict = {1: "A", 2: "B", 3: "C", 4: "D", 5: "E", 6: "F", 7: "G", 8: "H", 9: "I", 10: "J", 11: "K",
@@ -259,7 +284,7 @@ def main():
     #newOrder = pontifexCipher("HLXMB TKSTJ", False)
     #print(newOrder)
     
-    #To Do: Do this algorithm for as many characters in the message, and if keyPhrase is default
+    # Do this algorithm for as many characters in the message, and if keyPhrase is default
     # the deck order remains unshuffled, if the keyPhrase is not default then we will
     # permutate the deck according to the keyPhrase letter values, which is a way to shuffle the
     # deck by doing a second count cut using the index of values of the keyPhrase characters.
