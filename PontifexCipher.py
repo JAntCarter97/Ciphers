@@ -24,32 +24,21 @@ def custom_modulo(n, mod):
     return result if result != 0 else mod
                 
 #PONTIFEX Method
-def pontifexCipher(message, keyPhrase, isEncryptMode):
+def pontifexCipher(message, isEncryptMode, deckOrderArg = list(cardDict.values())):
+    deckOrder = deckOrderArg
     #Remove all whitespace and capitalize all characters
     message = message.replace(" ", "")
     message = message.upper()
-    keyPhrase = keyPhrase.replace(" ", "")
-    keyPhrase = keyPhrase.upper()
-    #Create default card deck permutation list
-    deckOrder = list(cardDict.values())
-    #print(len(deckOrder))
     #Empty list for the output line
     outputLine = []
     #Empty list for the new converted message values
     messageNums = []
-    keyPhraseNums = []
     #Convert message to text number values
     for i in message:
         for k in textValues:
             if i == k:
                 messageNums.append(np.where(textValues == k)[0][0]+1)
     #print(messageNums)
-    #Convert keyPhrase to text number values
-    for i in keyPhrase:
-        for k in textValues:
-            if i == k:
-                keyPhraseNums.append(np.where(textValues == k)[0][0]+1)
-    #print(keyPhraseNums)
     
     #ALgorithm:
     # Shift Joker A down 1 card. Bottom card position serves as the top card position (cyclic). 
@@ -64,10 +53,6 @@ def pontifexCipher(message, keyPhrase, isEncryptMode):
     #              output. 
     # Repeat algorithm as many times as characters in the cipher/message text.
     
-    #To Do: Do this algorithm for as many characters in the message, and if keyPhrase is default
-    # the deck order remains unshuffled, if the keyPhrase is not default then we will
-    # permutate the deck according to the keyPhrase letter values, which is a way to shuffle the
-    # deck by doing a second count cut using the index of values of the keyPhrase characters.
     print(deckOrder)
     print()
     l = 0
@@ -171,7 +156,6 @@ def pontifexCipher(message, keyPhrase, isEncryptMode):
             continue
         outputLine.append(deckOrder[cardCount])
         l += 1
-    #print("Output line", outputLine)
     
     ###############################################################################################
     #Encryption:
@@ -260,20 +244,56 @@ def pontifexCipher(message, keyPhrase, isEncryptMode):
         cipherTextFormatted = ' '.join(cipherTextDecrypted[i:i+5] for i in range(0, len(cipherTextDecrypted), 5))
 
         print("Decrypted and Formatted Cipher Text", cipherTextFormatted)
-
-
-#Test Function Calls
-
-#print(textValues)
-#print(cardValues)
-'''
-These Function calls demonstrate the encryption and decryption modes of the Pontifex Cipher.
-The first call is in encrypt mode which encrypts the cipher text "DONOT USEPC" to "HLXMB TKSTJ".
-The second call is in decrypt mode which decypts the cipher text "HLXMB TKSTJ" to "DONOT USEPC".
-'''
-pontifexCipher("DONOT USEPC", "Y", True)
-pontifexCipher("HLXMB TKSTJ", "Y", False)
-
-
         
+    return deckOrder
+
+
+# Main function
+def main():
+    '''
+    These Function calls demonstrate the encryption and decryption modes of the Pontifex Cipher.
+    The first call is in encrypt mode which encrypts the cipher text "DONOT USEPC" to "HLXMB TKSTJ".
+    The second call is in decrypt mode which decypts the cipher text "HLXMB TKSTJ" to "DONOT USEPC".
+    '''
+    #newOrder = pontifexCipher("DONOT USEPC", True)
+    #newOrder = pontifexCipher("HLXMB TKSTJ", False)
+    #print(newOrder)
+    
+    #To Do: Do this algorithm for as many characters in the message, and if keyPhrase is default
+    # the deck order remains unshuffled, if the keyPhrase is not default then we will
+    # permutate the deck according to the keyPhrase letter values, which is a way to shuffle the
+    # deck by doing a second count cut using the index of values of the keyPhrase characters.
+    
+    #Create empty list deck order
+    currentDeckOrder = []
+    keyPrompt = input("Permute Deck Order by a Key Phrase (Y/N)? \n")
+    if keyPrompt.lower() == "y":
+        keyPhrase = input("Enter Key Phrase: ")
+        currentDeckOrder = pontifexCipher(keyPhrase, True)
+        
+        modeSelect = input("Encrypt or Decrypt (E/D)?\n")
+        if modeSelect.lower() == "e":
+            message = input("Enter message to Encrypt: ")
+            currentDeckOrder = pontifexCipher(message, True, currentDeckOrder[:])
+        elif modeSelect.lower() == "d":
+            message = input("Enter message to Decrypt: ")
+            currentDeckOrder = pontifexCipher(message, False, currentDeckOrder[:])
+    elif keyPrompt.lower() == "n":
+        modeSelect = input("Encrypt or Decrypt (E/D)?\n")
+        if modeSelect.lower() == "e":
+            message = input("Enter message to Encrypt: ")
+            currentDeckOrder = pontifexCipher(message, True)
+        elif modeSelect.lower() == "d":
+            message = input("Enter message to Decrypt: ")
+            currentDeckOrder = pontifexCipher(message, False)
+    print(currentDeckOrder)
+    
+# Using the special variable 
+# __name__
+if __name__=="__main__":
+    main()
+
+
+
+      
         
