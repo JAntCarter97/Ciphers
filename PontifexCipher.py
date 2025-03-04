@@ -160,9 +160,9 @@ def pontifexCipher(message, isEncryptMode, deckOrderArg = list(cardDict.values()
         outputLine.append(deckOrder[cardCount])
         l += 1
 
-        print("Outputline")
-        print(outputLine)
-        print()
+        #print("Outputline")
+        #print(outputLine)
+        #print()
         
     ###############################################################################################
     #Encryption:
